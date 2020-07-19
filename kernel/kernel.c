@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #include "terminal.h"
+#include "inline_asm.h"
  
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
@@ -19,5 +20,10 @@ void kernel_main(void);
 void kernel_main(void) {
 	cls();
 	printk("Hello world!\n");
-	while(true) {}
+
+	// Infinite loop
+	cli();
+	while(true) {
+		hlt();
+	}
 }
