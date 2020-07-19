@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdarg.h>
 
 typedef struct {
 	size_t width;
@@ -43,10 +44,25 @@ void terminal_setcolor(Terminal* terminal, uint8_t color);
 
 // --- (External) utility functions ---
 
-// Print a message to a Terminal
-void printk(const char* message);
+/**
+ * fmt is a string with specifiers where variables can be inserted.
+ *
+ * ex: ("Hello %s", "world") -> "Hello world"
+ *
+ * Specifiers are
+ *   - %c: character
+ *   - %d: digit (integer)
+ *   - %x: hexadecimal value. Can be used to print pointers
+ *   - %b: binary value. Digits with base 2
+ * @param fmt Formatter string
+ * @param ... Variable amount of arguments to be inserted
+ */
+void printk(const char *fmt, ...);
 
 // Clears the screen
 void cls(void);
+
+// Make a string from a number
+char* itoa(unsigned int value, char* result, int base);
 
 #endif //KERNEL_SCREEN_H
