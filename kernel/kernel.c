@@ -17,5 +17,7 @@
 void kernel_main(void);
 
 void kernel_main(void) {
+	cls();
+	printk("Hello world!\n");
 	while(true) {}
 }

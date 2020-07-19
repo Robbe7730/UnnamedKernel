@@ -1,7 +1,14 @@
+# "Source" files
+AUXFILES := Makefile README.md
 SRCFILES := $(shell find $(PROJDIRS) -type f -name "*.c")
 HDRFILES := $(shell find $(PROJDIRS) -type f -name "*.h")
+
+# Generated files
 OBJFILES := $(patsubst %.c,target/%.o,$(SRCFILES))
 DEPFILES    := $(patsubst %.c,target/%.d,$(SRCFILES))
+
+# All files
+ALLFILES := $(SRCFILES) $(HDRFILES) $(AUXFILES)
 
 .PHONY: run, debug_kernel, clean, compile_kernel, wrapper, linker
 
@@ -23,5 +30,8 @@ wrapper:
 
 target/%.o: %.c Makefile
 	i686-elf-gcc -g -c $< -o $@ -std=gnu99 -ffreestanding -Og -Wall -Wextra -mno-80387 -mgeneral-regs-only -mno-red-zone -MMD -MP
+
+todolist:
+	-@for file in $(ALLFILES:Makefile=); do fgrep -H -e TODO -e FIXME $$file; done; true
 
 -include $(DEPFILES)
