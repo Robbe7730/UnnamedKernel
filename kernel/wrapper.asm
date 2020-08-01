@@ -1,14 +1,29 @@
 MAGIC    equ  0xE85250D6
 ARCH	 equ  0
-HEADER_LENGTH equ 0
+HEADER_LENGTH equ (.multiboot_header_end - .multiboot_header_start)
 CHECKSUM equ -(MAGIC + ARCH + HEADER_LENGTH)
 
 section .multiboot
-align 4
+align 8
 	dd MAGIC
 	dd ARCH
 	dd HEADER_LENGTH
 	dd CHECKSUM
+.multiboot_header_start
+; FB TAG
+align 8
+	dw 5	; Framebuffer tag
+	dw 0	; Flags
+	dd 20	; Size
+	dd 1024 ; Width
+	dd 768	; Height
+	dd 32	; Depth
+align 8
+; END TAG
+	dw 0 	; Empty tag
+	dw 0	; Flags
+	dd 8	; Size
+.multiboot_header_end
 
 ; The multiboot standard does not define the value of the stack pointer register
 ; (esp) and it is up to the kernel to provide a stack. This allocates room for a
