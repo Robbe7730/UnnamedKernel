@@ -16,14 +16,9 @@ void kernel_main(void) {
 	// kernel_info->l0_state = L0Entering;
 	// kernel_info->l1_state = STATE_INIT;
 
-	uint16_t* terminal_buffer = (uint16_t*) 0xB8000;
-	terminal_buffer[0] = (uint16_t) 'a' | (0x0f << 8);
-
-	printk("Testen");
-
 	// Main kernel loop
 	while (true) {
-		sti();
+		cli();
 		hlt();
 	}
 }
