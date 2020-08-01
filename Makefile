@@ -17,10 +17,10 @@ QEMU := qemu-system-x86_64
 .PHONY: run, debug_kernel, clean, compile_kernel, wrapper, grub_rescue
 
 run: grub_rescue
-	$(QEMU) target/grub-rescue.iso -monitor stdio
+	$(QEMU) -cdrom target/grub-rescue.iso -monitor stdio
 
 debug_kernel: grub_rescue
-	$(QEMU) -s -S target/grub-rescue.iso
+	$(QEMU) -s -S -cdrom target/grub-rescue.iso
 
 clean:
 	rm -r ./target/
