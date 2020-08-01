@@ -8,16 +8,6 @@
 #include "terminal.h"
 #include "inline_asm.h"
 #include "memory.h"
- 
-/* Check if the compiler thinks you are targeting the wrong operating system. */
-#if defined(__linux__)
-#error "You are not using a cross-compiler, you will most certainly run into trouble"
-#endif
- 
-/* This kernel will only work for the 32-bit ix86 targets. */
-#if !defined(__i386__)
-#error "This kernel needs to be compiled with a ix86-elf compiler"
-#endif
 
 #define transition_t uint32_t
 #define state_t uint32_t
@@ -27,21 +17,22 @@
 /*
  * The lowest-level state
  */
-typedef enum {
-    ENTERING,   /* Entering a new level 1 state, called once */
-    NEXT,       /* Finding a new level 1 state, not state-dependent except for the LTT, interrupts enabled */
-    TICK,       /* Ticking the level 1 state, called when NEXT decides there should be no state transition */
-    INVALID,
-} L0State;
+enum L0State {
+    L0Entering = 0,   /* Entering a new level 1 state, called once */
+    L0Next = 1,       /* Finding a new level 1 state, not state-dependent except for the LTT, interrupts enabled */
+    L0Tick = 2,       /* Ticking the level 1 state, called when NEXT decides there should be no state transition */
+    L0Invalid = -1,
+};
 
 // ----- LEVEL 1 -----
 
 /*
  * Defines a single transition
  */ 
-typedef struct {
+typedef struct L1TransitionStruct {
     transition_t id;
     state_t new_state;
+    struct L1TransitionStruct* next;
 } L1Transition;
 
 /*
@@ -49,7 +40,7 @@ typedef struct {
  */
 typedef struct {
     int num_entries;
-    L1Transition* entries;
+    L1Transition* first_entry;
 } TransitionTable;
 
 /*
@@ -57,8 +48,8 @@ typedef struct {
  */
 typedef struct {
     state_t id;
-    void (*enter_function)(void*);
-    void (*tick_function)(void*);
+    void (*enter_function)(void);
+    void (*tick_function)(void);
     TransitionTable* ltt;
 } L1State;
 
@@ -69,10 +60,11 @@ typedef struct {
  */
 typedef struct {
     TransitionTable* gtt;
-    L0State* l0_state;
+    enum L0State l0_state;
     L1State* l1_state;
 } KernelStateInfo;
 
 void kernel_main(void);
+void l0_tick(void);
 
 #endif //KERNEL_STATE_H

@@ -1,27 +1,20 @@
 #include "terminal.h"
 
-Terminal __global_terminal = {
-	.width = 80,
-	.height = 25,
-	.row = 0,
-	.column = 0,
-	.color = 0x07,
-	.buffer = (uint16_t*) 0xB8000,
-};
+Terminal* __global_terminal;
 
 Terminal* terminal_new() {
-	// TODO fix when alloc is implemented
-	__global_terminal.width = 80;
-	__global_terminal.height = 25;
-	__global_terminal.row = 0;
-	__global_terminal.column = 0;
-	__global_terminal.color = 0x07;
-	__global_terminal.buffer = (uint16_t*) 0xB8000;
-	return &__global_terminal;
+	__global_terminal = alloc(sizeof(Terminal));
+	__global_terminal->width = 80;
+	__global_terminal->height = 25;
+	__global_terminal->row = 0;
+	__global_terminal->column = 0;
+	__global_terminal->color = 0x07;
+	__global_terminal->buffer = (uint16_t*) 0xB8000;
+	return __global_terminal;
 }
 
 Terminal* terminal_get(void) {
-	return &__global_terminal;
+	return __global_terminal;
 }
 
 uint16_t vga_entry(Terminal* terminal, unsigned char character) {
@@ -37,7 +30,7 @@ void terminal_clear(Terminal* terminal) {
 }
 
 void terminal_free(Terminal** terminal) {
-	// TODO fix when free is implemented
+	free(*terminal);
 	*terminal = NULL;
 }
 
