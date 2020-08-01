@@ -28,6 +28,7 @@ clean:
 
 compile_kernel: wrapper $(OBJFILES)
 	$(CC) -g -T kernel/linker.ld -o target/kernel/kernel.bin -ffreestanding -Og -nostdlib target/kernel/*.o -lgcc -z max-page-size=0x1000
+	# x86_64-elf-ld -T kernel/linker.ld -o target/kernel/kernel.bin target/kernel/*.o
 
 wrapper:
 	nasm -felf64 kernel/wrapper.asm -o target/kernel/wrapper.o
