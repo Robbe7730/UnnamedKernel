@@ -8,6 +8,7 @@
 // #include "terminal.h"
 #include "inline_asm.h"
 #include "memory.h"
+#include "serial.h"
 
 #define transition_t uint32_t
 #define state_t uint32_t
@@ -64,7 +65,7 @@ typedef struct {
     L1State* l1_state;
 } KernelStateInfo;
 
-void kernel_main(void);
+void kernel_main(uint8_t*);
 void l0_tick(void);
 
 #endif //KERNEL_STATE_H

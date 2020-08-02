@@ -9,21 +9,21 @@ align 8
 	dd ARCH
 	dd HEADER_LENGTH
 	dd CHECKSUM
-.multiboot_header_start
+.multiboot_header_start:
 ; FB TAG
 align 8
 	dw 5	; Framebuffer tag
 	dw 0	; Flags
 	dd 20	; Size
-	dd 1024 ; Width
-	dd 768	; Height
+	dd 640	; Width
+	dd 360	; Height
 	dd 32	; Depth
 align 8
 ; END TAG
 	dw 0 	; Empty tag
 	dw 0	; Flags
 	dd 8	; Size
-.multiboot_header_end
+.multiboot_header_end:
 
 ; The multiboot standard does not define the value of the stack pointer register
 ; (esp) and it is up to the kernel to provide a stack. This allocates room for a
@@ -81,6 +81,10 @@ _start:
 	; preserved and the call is well defined.
 	; note, that if you are building on Windows, C functions may have "_" prefix in assembly: _kernel_main
 	extern kernel_main
+	; Add 12 bytes to the stack to comply with the SysV ABI
+	sub esp, 12
+	; Push rbx to get the boot info
+	push rbx
 	call kernel_main
 
 	; If the system has nothing more to do, put the computer into an

@@ -6,6 +6,7 @@
 #include <stdarg.h>
 
 #include "memory.h"
+#include "util.h"
 
 typedef struct {
 	size_t width;
